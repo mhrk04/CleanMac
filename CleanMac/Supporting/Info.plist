@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleDevelopmentRegion</key>
+    <string>$(DEVELOPMENT_LANGUAGE)</string>
+    <key>CFBundleDisplayName</key>
+    <string>CleanMac</string>
+    <key>CFBundleExecutable</key>
+    <string>$(EXECUTABLE_NAME)</string>
+    <key>CFBundleIconFile</key>
+    <string></string>
+    <key>CFBundleIconName</key>
+    <string>AppIcon</string>
+    <key>CFBundleIdentifier</key>
+    <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+    <key>CFBundleName</key>
+    <string>$(PRODUCT_NAME)</string>
+    <key>CFBundlePackageType</key>
+    <string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
+    <key>CFBundleShortVersionString</key>
+    <string>$(MARKETING_VERSION)</string>
+    <key>CFBundleVersion</key>
+    <string>$(CURRENT_PROJECT_VERSION)</string>
+    <key>LSApplicationCategoryType</key>
+    <string>public.app-category.utilities</string>
+    <key>LSMinimumSystemVersion</key>
+    <string>$(MACOSX_DEPLOYMENT_TARGET)</string>
+    <key>LSUIElement</key>
+    <false/>
+    <key>NSHumanReadableCopyright</key>
+    <string>Copyright © 2026 CleanMac. All rights reserved.</string>
+    <key>NSPrincipalClass</key>
+    <string>NSApplication</string>
+    <key>NSAppleEventsUsageDescription</key>
+    <string>CleanMac needs to send a Quit event to applications before uninstalling them so their files are not in use.</string>
+    <key>NSDocumentsFolderUsageDescription</key>
+    <string>CleanMac scans your Documents folder to find large and old files you may want to remove.</string>
+    <key>NSDownloadsFolderUsageDescription</key>
+    <string>CleanMac scans your Downloads folder to find large and old files you may want to remove.</string>
+    <key>NSDesktopFolderUsageDescription</key>
+    <string>CleanMac scans your Desktop to find large and old files you may want to remove.</string>
+    <key>NSRemovableVolumesUsageDescription</key>
+    <string>CleanMac can empty Trash bins on external volumes to reclaim disk space.</string>
+    <key>NSSystemAdministrationUsageDescription</key>
+    <string>CleanMac may need to remove system-level cache files owned by root. You will be prompted before any privileged operation.</string>
+    <key>SUEnableAutomaticChecks</key>
+    <false/>
+</dict>
+</plist>

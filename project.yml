@@ -1,0 +1,117 @@
+name: CleanMac
+options:
+  bundleIdPrefix: com.cleanmac
+  deploymentTarget:
+    macOS: "14.0"
+  createIntermediateGroups: true
+  generateEmptyDirectories: true
+  minimumXcodeGenVersion: "2.38.0"
+  # English is the source language of Localizable.xcstrings; every key in that
+  # catalog is its own English text, so a missing translation falls back to the
+  # key and the app stays correct in locales that have no column yet.
+  developmentLanguage: en
+
+settings:
+  base:
+    SWIFT_VERSION: "5.10"
+    MACOSX_DEPLOYMENT_TARGET: "14.0"
+    # Deliberately empty and never committed with a real value. scripts/build.sh
+    # and scripts/notarize.sh auto-detect the team from the keychain
+    # (`security find-identity -v -p codesigning`, spec §1) and override this on
+    # the xcodebuild command line, so the same checkout builds on any signed-in
+    # machine without editing this file.
+    DEVELOPMENT_TEAM: ""
+    CODE_SIGN_STYLE: Automatic
+    ENABLE_HARDENED_RUNTIME: YES
+    ENABLE_APP_SANDBOX: NO         # required: we clean system caches
+    ENABLE_USER_SELECTED_FILES: readwrite
+    GCC_OPTIMIZATION_LEVEL: "s"
+    SWIFT_OPTIMIZATION_LEVEL: "-O"
+    SWIFT_STRICT_CONCURRENCY: complete
+    CLANG_ENABLE_MODULES: YES
+    CLANG_ENABLE_OBJC_ARC: YES
+    SWIFT_EMIT_LOC_STRINGS: YES
+    # Prefer the .xcstrings catalog over legacy .strings/.lproj folders.
+    LOCALIZATION_PREFERS_STRING_CATALOGS: YES
+    # No generated symbol API. Keys here are natural English text, and many are
+    # not valid Swift identifiers at all ("%1$@ · %2$@"), so symbol generation
+    # would emit unusable names; lookup goes through `L10n` instead.
+    STRING_CATALOG_GENERATE_SYMBOLS: NO
+  configs:
+    # Distribution is Developer ID + notarization, outside the Mac App Store.
+    # Debug builds stay ad-hoc so the app runs locally without a team.
+    Debug:debug
+    Release:release
+
+targets:
+  CleanMac:
+    type: application
+    platform: macOS
+    displayName: CleanMac
+    sources:
+      - path: CleanMac
+        excludes:
+          - "Resources/Rules/**"     # re-included below as a folder reference
+          - "Resources/Localizable.xcstrings"   # re-included below as a resource
+    resources:
+      - path: CleanMac/Resources/Rules
+        buildPhase: resources
+        type: folder
+        optional: false
+      # The string catalog. Generated from the L10n call sites by
+      # `.verify/genstrings.py --write`; do not hand-edit, and do not let it
+      # drift -- `LocalizationTests` asserts source/catalog parity.
+      - path: CleanMac/Resources/Localizable.xcstrings
+        buildPhase: resources
+        optional: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.cleanmac.app
+        PRODUCT_NAME: CleanMac
+        MARKETING_VERSION: "1.0.0"
+        CURRENT_PROJECT_VERSION: "1"
+        INFOPLIST_FILE: CleanMac/Supporting/Info.plist
+        CODE_SIGN_ENTITLEMENTS: CleanMac/Supporting/CleanMac.entitlements
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        LD_RUNPATH_SEARCH_PATHS:
+          - $(inherited)
+          - "@executable_path/../Frameworks"
+        COMBINE_HIDPI_IMAGES: YES
+        DEAD_CODE_STRIPPING: YES
+        SWIFT_ACTIVE_COMPILATION_CONDITIONS:
+          - DEBUG
+      configs:
+        debug:
+          CODE_SIGN_IDENTITY: "-"     # ad-hoc, for local runs
+        release:
+          CODE_SIGN_IDENTITY: "Developer ID Application"
+          # Secure timestamp is mandatory for notarization.
+          OTHER_CODE_SIGN_FLAGS: "--timestamp --options runtime"
+    scheme:
+      testTargets:
+        - CleanMacTests
+      commandLineArguments:
+        arguments:
+          - argument: "-AppleLanguages"
+            isEnabled: false
+          - argument: "(en)"
+            isEnabled: false
+      environmentVariables:
+        OS_ACTIVITY_MODE:
+          value: disable
+          isEnabled: true
+
+  CleanMacTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - path: CleanMacTests
+    dependencies:
+      - target: CleanMac
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.cleanmac.tests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/CleanMac.app/Contents/MacOS/CleanMac"
+        BUNDLE_LOADER: "$(TEST_HOST)"

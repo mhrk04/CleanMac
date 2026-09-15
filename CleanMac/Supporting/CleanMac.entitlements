@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!--
+      App Sandbox is DISABLED on purpose.
+      A cleaner that cannot see /Library/Caches, other apps' containers, or
+      Mail Downloads is not a cleaner. Distribution is Developer ID + notarized,
+      outside the Mac App Store.
+    -->
+    <key>com.apple.security.app-sandbox</key>
+    <false/>
+
+    <!-- Hardened Runtime exceptions. Keep these minimal for notarization. -->
+    <key>com.apple.security.cs.allow-jit</key>
+    <false/>
+    <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+    <false/>
+    <key>com.apple.security.cs.disable-library-validation</key>
+    <false/>
+    <key>com.apple.security.cs.allow-dyld-environment-variables</key>
+    <false/>
+
+    <!-- Needed to send kAEQuitApplication to running apps before uninstall. -->
+    <key>com.apple.security.automation.apple-events</key>
+    <true/>
+
+    <!-- Read/write user-selected files (Large & Old Files picker). -->
+    <key>com.apple.security.files.user-selected.read-write</key>
+    <true/>
+
+    <!-- Not required, but harmless: allows access to file URLs from bookmarks
+         the user grants via the folder picker. -->
+    <key>com.apple.security.files.bookmarks.app-scope</key>
+    <true/>
+</dict>
+</plist>
