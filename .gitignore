@@ -1,0 +1,49 @@
+# Xcode
+build/
+DerivedData/
+*.xcuserstate
+*.xcscmblueprint
+*.xccheckout
+*.moved-aside
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# XcodeGen output — regenerate with `xcodegen generate`
+CleanMac.xcodeproj/
+
+# Swift Package Manager
+.build/
+.swiftpm/
+Packages/
+Package.resolved
+
+# CocoaPods / Carthage (unused, defensive)
+Pods/
+Carthage/Build/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Local signing / notarization
+ExportOptions.plist
+notarytool-credentials.plist
+*.p12
+*.mobileprovision
+
+# Python bytecode (from .verify/ helper scripts)
+__pycache__/
+*.pyc
+
+# Qoder / editor workspace marker (not project code)
+.aicoding-chat-workspace

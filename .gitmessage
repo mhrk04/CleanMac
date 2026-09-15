@@ -1,0 +1,20 @@
+# <type>(<optional scope>): <subject>   (max ~72 chars, imperative mood)
+#
+# <blank line>
+# <body: what & why, not how. wrap at 72.>
+#
+# <blank line>
+# <footer: BREAKING CHANGE: ..., Refs #123, Co-authored-by: ...>
+#
+# Allowed types:
+#   feat     A new feature
+#   fix      A bug fix
+#   docs     Documentation only
+#   style    Formatting; no code-behaviour change
+#   refactor Code change that neither fixes a bug nor adds a feature
+#   perf     Performance improvement
+#   test     Adding or correcting tests
+#   build    Build system, XcodeGen, scripts, entitlements
+#   ci       CI configuration
+#   chore    Housekeeping (no src or test change)
+#   revert   Reverts a previous commit
