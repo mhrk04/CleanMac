@@ -1,0 +1,297 @@
+# System Junk rule pack.
+#
+# Each rule is matched by the ScannerEngine and produces ScanItems.
+# Fields:
+#   id          unique key (user rules with the same id override bundled ones)
+#   name        human-readable label shown in the UI
+#   category    grouping bucket (caches, logs, languages, developer, trash,
+#               mail, backups, other)
+#   safety      safe | review | dangerous
+#                 safe       -> pre-checked in the UI
+#                 review     -> shown with a warning, unchecked by default
+#                 dangerous  -> hidden unless "Show advanced rules" is enabled
+#   paths       glob patterns. Supported:
+#                 ~        expands to the user's home directory
+#                 *        matches within a single path segment
+#                 **       matches across path segments (recursive)
+#                 ?        matches a single character
+#   excludes    glob patterns; any match wins over `paths`
+#   strategy    optional specialised handler name. When absent, the default
+#               glob handler is used. Recognised strategies:
+#                 languageFilter  -> keeps only .lproj for inactive languages
+#                 trashBins       -> enumerates .Trashes on every volume
+#                 brokenLoginItems-> login items whose target no longer exists
+#   modifiedWithinHours  skip files whose mtime is within this many hours
+#   description short help text shown as a tooltip in the UI
+
+version: 1
+pack: system-junk
+
+rules:
+  # ---------------------------------------------------------------- Caches ---
+  - id: user-caches
+    name: User Cache Files
+    category: caches
+    safety: safe
+    paths:
+      - "~/Library/Caches/*"
+    excludes:
+      - "~/Library/Caches/com.apple.Safari/**"
+      - "~/Library/Caches/com.apple.appstore/**"
+      - "~/Library/Caches/com.apple.AppStore/**"
+      - "~/Library/Caches/com.apple.TCC/**"
+      - "~/Library/Caches/CloudKit/**"
+      - "~/Library/Caches/com.apple.bird/**"
+    modifiedWithinHours: 24
+    description: Temporary files that apps recreate automatically.
+
+  - id: system-caches
+    name: System Cache Files
+    category: caches
+    safety: review
+    paths:
+      - "/Library/Caches/*"
+    excludes:
+      - "/Library/Caches/com.apple.aned/**"
+      - "/Library/Caches/com.apple.bom/**"
+    modifiedWithinHours: 24
+    description: System-wide caches. May require administrator privileges.
+
+  - id: app-http-storages
+    name: HTTP Storages
+    category: caches
+    safety: safe
+    paths:
+      - "~/Library/HTTPStorages/*"
+    excludes:
+      - "~/Library/HTTPStorages/com.apple.Safari/**"
+      - "~/Library/HTTPStorages/com.apple.accounts.*"
+    description: Cached HTTP cookies, credentials, and web storage.
+
+  # ------------------------------------------------------------------ Logs ---
+  - id: user-logs
+    name: User Log Files
+    category: logs
+    safety: safe
+    paths:
+      - "~/Library/Logs/*"
+    excludes:
+      - "~/Library/Logs/DiagnosticReports/**"
+    description: Application log files. Safe to remove.
+
+  - id: app-diagnostic-reports
+    name: Diagnostic Reports
+    category: logs
+    safety: safe
+    paths:
+      - "~/Library/Logs/DiagnosticReports/*"
+      - "/Library/Logs/DiagnosticReports/*"
+    description: Crash reports and hangs already uploaded or stale.
+
+  # ------------------------------------------------------------- Developer ---
+  - id: xcode-derived-data
+    name: Xcode Derived Data
+    category: developer
+    safety: safe
+    paths:
+      - "~/Library/Developer/Xcode/DerivedData/*"
+    description: Intermediate build products. Xcode regenerates them on next build.
+
+  - id: xcode-archives
+    name: Xcode Archives
+    category: developer
+    safety: review
+    paths:
+      - "~/Library/Developer/Xcode/Archives/*"
+    description: Archived builds. Only remove if you do not need to submit or symbolicate them.
+
+  - id: xcode-ios-device-support
+    name: Xcode iOS Device Support
+    category: developer
+    safety: review
+    paths:
+      - "~/Library/Developer/Xcode/iOS DeviceSupport/*"
+    description: Symbols for previously connected iOS versions. Xcode recreates them when needed.
+
+  - id: core-simulator-caches
+    name: Simulator Caches
+    category: developer
+    safety: review
+    paths:
+      - "~/Library/Developer/CoreSimulator/Caches/*"
+    description: Simulator runtime caches.
+
+  - id: npm-cache
+    name: npm Cache
+    category: developer
+    safety: safe
+    paths:
+      - "~/.npm/_cacache/*"
+    description: npm package cache. `npm install` will repopulate as needed.
+
+  - id: yarn-cache
+    name: Yarn Cache
+    category: developer
+    safety: safe
+    paths:
+      - "~/Library/Caches/Yarn/*"
+      - "~/.cache/yarn/*"
+
+  - id: pnpm-store
+    name: pnpm Store
+    category: developer
+    safety: review
+    paths:
+      - "~/Library/pnpm/store/*"
+      - "~/.pnpm-store/*"
+
+  - id: homebrew-cache
+    name: Homebrew Cache
+    category: developer
+    safety: safe
+    paths:
+      - "~/Library/Caches/Homebrew/*"
+    description: Downloaded bottles and tarballs. `brew cleanup` does the same thing.
+
+  - id: pip-cache
+    name: pip Cache
+    category: developer
+    safety: safe
+    paths:
+      - "~/Library/Caches/pip/*"
+
+  - id: gradle-cache
+    name: Gradle Cache
+    category: developer
+    safety: review
+    paths:
+      - "~/.gradle/caches/*"
+
+  - id: maven-repository
+    name: Maven Local Repository
+    category: developer
+    safety: dangerous
+    paths:
+      - "~/.m2/repository/*"
+    description: Removing this forces a full re-download of all Maven dependencies.
+
+  - id: docker-desktop-data
+    name: Docker Desktop Data
+    category: developer
+    safety: dangerous
+    paths:
+      - "~/Library/Containers/com.docker.docker/Data/vms/*"
+    description: Docker VM disk images. Removing this deletes all containers and volumes.
+
+  # ------------------------------------------------------------- Languages ---
+  - id: language-files
+    name: Unused Language Files
+    category: languages
+    safety: review
+    strategy: languageFilter
+    paths:
+      - "~/Library/**/*.lproj"
+      - "/Applications/**/*.lproj"
+    # `active` is resolved at scan time to the user's AppleLanguages; a literal
+    # code ("en", "zh-Hans", ...) would be kept as-is. Omitting the key means
+    # [active], never "delete everything".
+    keepLanguages: [active]
+    description: Localisation bundles for languages you do not use.
+
+  # ----------------------------------------------------------------- Trash ---
+  - id: user-trash
+    name: Trash
+    category: trash
+    safety: safe
+    paths:
+      - "~/.Trash/*"
+    description: Files you already deleted. Emptying is permanent.
+
+  - id: volume-trashes
+    name: Trash on External Volumes
+    category: trash
+    safety: safe
+    strategy: trashBins
+    paths: []
+    description: Every mounted volume has its own .Trashes folder.
+
+  # ------------------------------------------------------------------ Mail ---
+  - id: mail-downloads
+    name: Mail Downloads
+    category: mail
+    safety: safe
+    paths:
+      - "~/Library/Mail Downloads/*"
+      - "~/Library/Containers/com.apple.mail/Data/Library/Mail Downloads/*"
+    description: Attachments Mail.app downloaded to view. They remain on the server.
+
+  - id: mail-envelope-index
+    name: Mail Envelope Index
+    category: mail
+    safety: review
+    paths:
+      - "~/Library/Mail/*/MailData/Envelope Index*"
+      - "~/Library/Containers/com.apple.mail/Data/Library/Mail/*/MailData/Envelope Index*"
+    description: Mail rebuilds the index on next launch (can take several minutes).
+
+  # --------------------------------------------------------------- Backups ---
+  - id: ios-device-backups
+    name: iOS Device Backups
+    category: backups
+    safety: review
+    paths:
+      - "~/Library/Application Support/MobileSync/Backup/*"
+    description: Local backups of iPhones and iPads. Only remove if you have another copy.
+
+  - id: time-machine-local-snapshots
+    name: Time Machine Local Snapshots
+    category: backups
+    safety: dangerous
+    strategy: tmutilSnapshots
+    paths: []
+    description: Local APFS snapshots. Managed by tmutil, not directly deletable.
+
+  # --------------------------------------------------------------- Misc ---
+  - id: broken-login-items
+    name: Broken Login Items
+    category: other
+    safety: safe
+    strategy: brokenLoginItems
+    paths: []
+    description: Login items whose target application no longer exists.
+
+  - id: saved-application-state
+    name: Saved Application State
+    category: other
+    safety: safe
+    paths:
+      - "~/Library/Saved Application State/*"
+    excludes:
+      - "~/Library/Saved Application State/com.apple.finder.savedState"
+      - "~/Library/Saved Application State/com.apple.Safari.savedState"
+    description: Window layouts apps restore on next launch.
+
+  - id: quicklook-cache
+    name: QuickLook Cache
+    category: caches
+    safety: safe
+    paths:
+      - "~/Library/Caches/com.apple.QuickLook.thumbnailcache/**"
+      - "/private/var/folders/**/com.apple.QuickLook.thumbnailcache/**"
+
+  - id: font-cache
+    name: Font Cache
+    category: caches
+    safety: review
+    paths:
+      - "~/Library/Caches/com.apple.FontRegistry/**"
+      - "/private/var/folders/**/com.apple.FontRegistry/**"
+    description: Rebuilt automatically. Some apps may take longer to launch once.
+
+  - id: application-crashpad
+    name: Application Crash Dumps
+    category: logs
+    safety: safe
+    paths:
+      - "~/Library/Application Support/Crashpad/completed/*"
+      - "~/Library/Application Support/Crashpad/pending/*"

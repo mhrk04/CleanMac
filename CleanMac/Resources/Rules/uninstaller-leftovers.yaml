@@ -1,0 +1,185 @@
+# Uninstaller leftover rule pack.
+#
+# These rules use template variables that LeftoverFinder substitutes at scan
+# time for each installed application:
+#   {bundleId}     e.g. "com.google.Chrome"
+#   {appName}      e.g. "Google Chrome"
+#   {execName}     e.g. "Google Chrome"  (CFBundleExecutable)
+#
+# Rules with the `alwaysInclude` flag are added to the results list even when
+# nothing matches, so the UI can show "No caches found" instead of hiding the
+# row.
+
+version: 1
+pack: uninstaller-leftovers
+
+rules:
+  - id: app-bundle
+    name: Application
+    category: application
+    safety: safe
+    paths:
+      - "{appPath}"
+    description: The application bundle itself.
+
+  - id: app-support
+    name: Application Support
+    category: support
+    safety: safe
+    paths:
+      - "~/Library/Application Support/{bundleId}"
+      - "~/Library/Application Support/{appName}"
+      - "/Library/Application Support/{bundleId}"
+      - "/Library/Application Support/{appName}"
+
+  - id: containers
+    name: Sandboxed Containers
+    category: containers
+    safety: safe
+    paths:
+      - "~/Library/Containers/{bundleId}"
+      - "~/Library/Containers/{bundleId}.*"
+
+  - id: group-containers
+    name: Group Containers
+    category: containers
+    safety: safe
+    paths:
+      - "~/Library/Group Containers/*{bundleId}*"
+      - "~/Library/Group Containers/*.{bundleId}"
+
+  - id: preferences
+    name: Preferences
+    category: preferences
+    safety: safe
+    paths:
+      - "~/Library/Preferences/{bundleId}.plist"
+      - "~/Library/Preferences/{bundleId}.*.plist"
+      - "/Library/Preferences/{bundleId}.plist"
+
+  - id: caches
+    name: Caches
+    category: caches
+    safety: safe
+    paths:
+      - "~/Library/Caches/{bundleId}"
+      - "~/Library/Caches/{bundleId}.*"
+      - "~/Library/Caches/{appName}"
+      - "/Library/Caches/{bundleId}"
+
+  - id: http-storages
+    name: HTTP Storages
+    category: caches
+    safety: safe
+    paths:
+      - "~/Library/HTTPStorages/{bundleId}"
+      - "~/Library/HTTPStorages/{bundleId}.*"
+      - "~/Library/HTTPStorages/{bundleId}.binarycookies"
+
+  - id: webkit-storage
+    name: WebKit Storage
+    category: caches
+    safety: safe
+    paths:
+      - "~/Library/WebKit/{bundleId}"
+
+  - id: launch-agents-user
+    name: Launch Agents (User)
+    category: launchitems
+    safety: review
+    paths:
+      - "~/Library/LaunchAgents/{bundleId}.plist"
+      - "~/Library/LaunchAgents/{bundleId}.*.plist"
+      - "~/Library/LaunchAgents/com.{appName}.*.plist"
+
+  - id: launch-agents-system
+    name: Launch Agents (System)
+    category: launchitems
+    safety: review
+    paths:
+      - "/Library/LaunchAgents/{bundleId}.plist"
+      - "/Library/LaunchAgents/{bundleId}.*.plist"
+
+  - id: launch-daemons-system
+    name: Launch Daemons (System)
+    category: launchitems
+    safety: review
+    paths:
+      - "/Library/LaunchDaemons/{bundleId}.plist"
+      - "/Library/LaunchDaemons/{bundleId}.*.plist"
+
+  - id: saved-state
+    name: Saved Application State
+    category: state
+    safety: safe
+    paths:
+      - "~/Library/Saved Application State/{bundleId}.savedState"
+
+  - id: logs
+    name: Logs
+    category: logs
+    safety: safe
+    paths:
+      - "~/Library/Logs/{bundleId}"
+      - "~/Library/Logs/{appName}"
+      - "/Library/Logs/{bundleId}"
+      - "/Library/Logs/{appName}"
+
+  - id: privileged-helper
+    name: Privileged Helper Tools
+    category: helpers
+    safety: review
+    paths:
+      - "/Library/PrivilegedHelperTools/{bundleId}*"
+      - "/Library/PrivilegedHelperTools/com.{appName}*"
+
+  - id: receipts
+    name: Installer Receipts
+    category: helpers
+    safety: review
+    paths:
+      - "/var/db/receipts/{bundleId}.*"
+
+  - id: internet-plugins
+    name: Internet Plugins
+    category: plugins
+    safety: review
+    paths:
+      - "~/Library/Internet Plug-Ins/*{appName}*"
+      - "/Library/Internet Plug-Ins/*{appName}*"
+
+  - id: preference-panes
+    name: Preference Panes
+    category: plugins
+    safety: review
+    paths:
+      - "~/Library/PreferencePanes/*{appName}*"
+      - "/Library/PreferencePanes/*{appName}*"
+
+  - id: application-scripts
+    name: Application Scripts
+    category: support
+    safety: safe
+    paths:
+      - "~/Library/Application Scripts/{bundleId}"
+      - "~/Library/Application Scripts/{bundleId}.*"
+
+  - id: crashpad
+    name: Crash Reports
+    category: logs
+    safety: safe
+    paths:
+      - "~/Library/Application Support/Crashpad/completed/{execName}*"
+
+  # --- Files to KEEP OUT of the results even if a rule above matched them ---
+  # Expressed as excludes at the pack level. The RuleLoader merges these into
+  # every rule.
+excludes:
+  - "~/Library/Application Support/MobileSync/**"   # iOS backups, not app-specific
+  - "~/Library/Application Support/AddressBook/**"  # Contacts database
+  - "~/Library/Application Support/iCloud/**"
+  - "~/Library/Containers/com.apple.**"             # Apple system containers
+  - "~/Library/Preferences/com.apple.**"
+  - "~/Library/Caches/com.apple.**"
+  - "/Library/Application Support/com.apple.**"
+  - "/Library/Preferences/com.apple.**"

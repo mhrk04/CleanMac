@@ -1,0 +1,103 @@
+# Large & Old Files defaults.
+#
+# This pack is not a set of match rules — it configures the Large & Old Files
+# module: which folders to walk by default, which to skip, and what counts as
+# "large" and "old".
+
+version: 1
+pack: large-files-defaults
+
+defaults:
+  sizeThresholdMB: 100
+  ageDaysThreshold: 180
+  includeHiddenFiles: false
+  followSymlinks: false
+
+# Folders to walk when the user has not chosen any explicitly.
+# `~` expands to the user's home directory.
+searchRoots:
+  - "~/Desktop"
+  - "~/Documents"
+  - "~/Downloads"
+  - "~/Movies"
+  - "~/Music"
+  - "~/Pictures"
+
+# Never descend into these paths, even if they sit under a search root.
+skipPaths:
+  - "~/Library"
+  - "~/.*"                     # every dotfile at the home root
+  - "**/node_modules"
+  - "**/.git"
+  - "**/.svn"
+  - "**/.hg"
+  - "**/.gradle"
+  - "**/.cargo"
+  - "**/.rustup"
+  - "**/Pods"
+  - "**/.venv"
+  - "**/venv"
+  - "**/__pycache__"
+  - "**/.DS_Store"
+  - "**/DerivedData"
+  - "**/.build"
+
+# File extensions we never suggest deleting, even when they are huge and old.
+# These are usually user documents or irreplaceable media.
+protectedExtensions:
+  - ".numbers"
+  - ".pages"
+  - ".key"
+  - ".psd"
+  - ".ai"
+  - ".indd"
+  - ".prproj"
+  - ".aep"
+  - ".fcpxml"
+  - ".fcpbundle"
+  - ".logicx"
+  - ".band"
+  - ".graffle"
+
+# Bundle extensions: treat these as opaque units, never descend inside.
+bundleExtensions:
+  - ".app"
+  - ".photoslibrary"
+  - ".musiclibrary"
+  - ".tvlibrary"
+  - ".fcpbundle"
+  - ".imovielibrary"
+  - ".photoslibrary"
+  - ".aplibrary"
+  - ".framework"
+  - ".bundle"
+  - ".pkg"
+  - ".dmg"
+  - ".sparsebundle"
+  - ".sparseimage"
+  - ".xcassets"
+  - ".playground"
+  - ".lproj"
+
+# Ready-made filter presets shown as chips in the UI.
+presets:
+  - id: movies-and-tv
+    name: Movies & TV Shows
+    extensions: [".mkv", ".mp4", ".mov", ".avi", ".m4v", ".wmv", ".flv"]
+    minSizeMB: 500
+  - id: disk-images
+    name: Disk Images
+    extensions: [".dmg", ".iso", ".pkg", ".sparsebundle", ".sparseimage"]
+    minSizeMB: 100
+  - id: archives
+    name: Archives
+    extensions: [".zip", ".rar", ".7z", ".tar", ".gz", ".bz2", ".xz"]
+    minSizeMB: 100
+  - id: ios-backups
+    name: Old iOS Backups
+    pathContains: "MobileSync/Backup"
+    minSizeMB: 0
+  - id: simulator-runtimes
+    name: Simulator Runtimes
+    pathContains: "CoreSimulator/Devices"
+    minSizeMB: 0
