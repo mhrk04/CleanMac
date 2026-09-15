@@ -43,6 +43,18 @@ The helper scripts are invoked through `bash` below so they work on a fresh
 clone regardless of the executable bit. To call them directly instead, run
 `chmod +x scripts/*.sh` once.
 
+First-time setup on a fresh clone wires up the git hooks and commit signing —
+these live in `.git/config`, which git cannot version, so they are set per
+clone by a small idempotent script:
+
+```bash
+make setup        # or: bash scripts/setup.sh
+```
+
+This points `core.hooksPath` at `.githooks/` (so the Conventional Commits
+message hook runs), sets `.gitmessage` as the commit template, and enables
+GPG signing when a secret key is present. It is safe to run more than once.
+
 ```bash
 # 1. Install XcodeGen (one time)
 brew install xcodegen
@@ -114,6 +126,25 @@ expected `codesign`/`spctl` output, and troubleshooting.
 
 See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for a deeper dive into the
 scanner engine, the rule pack format, and the safety denylist.
+
+## Contributing
+
+After cloning, run `make setup` once (see Getting started).
+
+Commits follow [Conventional Commits](https://www.conventionalcommits.org):
+`type(scope): subject`, where `type` is one of `feat`, `fix`, `docs`, `style`,
+`refactor`, `perf`, `test`, `build`, `ci`, `chore`, or `revert`. The
+`.githooks/commit-msg` hook rejects any subject that does not match, and
+`.gitmessage` is preloaded as the commit template to guide the format.
+
+All commits are **GPG-signed** (`commit.gpgsign` is enabled by `make setup`
+when a key is available), so the history stays verifiable on GitHub. To sign
+you need a GPG key registered with your GitHub account; without one, disable
+signing locally with `git config commit.gpgsign false`.
+
+Common tasks are exposed through the `Makefile` — run `make` (or `make help`)
+to list them: `setup`, `project`, `build`, `release`, `test`, `doctor`,
+`notarize`.
 
 ## License
 
