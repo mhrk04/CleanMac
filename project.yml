@@ -49,21 +49,38 @@ targets:
     platform: macOS
     displayName: CleanMac
     sources:
+      # Exclude the resource files from the recursive source glob so they are
+      # not compiled, then re-add each one below as an explicit source entry
+      # forced into the resources build phase. A previous `resources:` folder
+      # reference (`type: folder`) never landed in the product's Copy Bundle
+      # Resources phase — the files fell under this `sources` path and were
+      # filtered out by these excludes before the resource declaration could
+      # pick them up. Declaring them as `buildPhase: resources` source entries
+      # is the reliable XcodeGen way to ship a file that lives under a source
+      # tree.
       - path: CleanMac
         excludes:
-          - "Resources/Rules/**"     # re-included below as a folder reference
-          - "Resources/Localizable.xcstrings"   # re-included below as a resource
-    resources:
-      - path: CleanMac/Resources/Rules
+          - "Resources/Rules/**"
+          - "Resources/Localizable.xcstrings"
+      # The three bundled YAML rule packs. A normal (file) resource copy
+      # flattens these into Contents/Resources/, which RuleLoader resolves via
+      # its flat `url(forResource:withExtension:)` fallback (the
+      # `subdirectory: "Rules"` lookup returns nil, the flat one succeeds).
+      - path: CleanMac/Resources/Rules/system-junk.yaml
+        type: file
         buildPhase: resources
-        type: folder
-        optional: false
+      - path: CleanMac/Resources/Rules/uninstaller-leftovers.yaml
+        type: file
+        buildPhase: resources
+      - path: CleanMac/Resources/Rules/large-files-defaults.yaml
+        type: file
+        buildPhase: resources
       # The string catalog. Generated from the L10n call sites by
       # `.verify/genstrings.py --write`; do not hand-edit, and do not let it
       # drift -- `LocalizationTests` asserts source/catalog parity.
       - path: CleanMac/Resources/Localizable.xcstrings
+        type: file
         buildPhase: resources
-        optional: false
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.cleanmac.app
