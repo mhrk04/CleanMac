@@ -240,12 +240,12 @@ public struct ScanItemRow: View {
 // MARK: - Preview
 
 #Preview {
-    @State var selected1 = true
-    @State var expanded1 = true
-    @State var selected2 = false
-    @State var expanded2 = false
+    @Previewable @State var selected1 = true
+    @Previewable @State var expanded1 = true
+    @Previewable @State var selected2 = false
+    @Previewable @State var expanded2 = false
 
-    return VStack(spacing: 10) {
+    VStack(spacing: 10) {
         CategoryRow(
             title: L10n.string("Cache Files"),
             systemImage: "externaldrive.badge.timemachine",
