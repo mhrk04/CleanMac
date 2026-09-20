@@ -137,7 +137,7 @@ public struct ModuleCard: View {
         ModuleCard(
             title: L10n.string("Uninstaller"),
             subtitle: L10n.string("Remove apps and all their leftover files."),
-            systemImage: "app.badge.trash",
+            systemImage: "trash.square.fill",
             accentColor: Theme.Colors.warning,
             onTap: {}
         )

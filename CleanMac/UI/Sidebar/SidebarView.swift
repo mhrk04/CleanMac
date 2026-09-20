@@ -34,7 +34,7 @@ public enum SidebarItem: String, CaseIterable, Identifiable, Sendable {
         switch self {
         case .smartScan: return "sparkles"
         case .systemJunk: return "externaldrive.badge.timemachine"
-        case .uninstaller: return "app.badge.trash"
+        case .uninstaller: return "trash.square.fill"
         case .largeAndOld: return "doc.text.magnifyingglass"
         case .history: return "clock.arrow.circlepath"
         case .settings: return "gearshape.fill"

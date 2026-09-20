@@ -343,7 +343,7 @@ public struct UninstallerView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         } else {
             VStack(spacing: 12) {
-                Image(systemName: "app.badge.trash")
+                Image(systemName: "trash.square.fill")
                     .font(.system(size: 40))
                     .foregroundStyle(Theme.Colors.textTertiary)
                 Text(L10n.string("Select an app"))

@@ -262,7 +262,7 @@ public struct HistoryView: View {
         switch manifest.source {
         case "smart-scan": return "sparkles"
         case "system-junk": return "externaldrive.badge.timemachine"
-        case "uninstaller": return "app.badge.trash"
+        case "uninstaller": return "trash.square.fill"
         case "large-and-old": return "doc.text.magnifyingglass"
         default: return "trash"
         }
