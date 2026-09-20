@@ -41,10 +41,21 @@ public final class SettingsStore: ObservableObject, @unchecked Sendable {
         self.defaults = defaults
         registerDefaults()
         // Bridge the manual publisher into `objectWillChange` so views that
-        // observe the store re-render when any preference changes.
-        changeCancellable = publisher.sink { [weak self] in
-            self?.objectWillChange.send()
-        }
+        // observe the store re-render when any preference changes. Delivery is
+        // hopped onto the main run loop so `objectWillChange` never fires
+        // synchronously inside a setter's stack. That matters because SwiftUI
+        // bindings (e.g. `MenuBarExtra(isInserted:)` and the sidebar selection
+        // binding) can write a setting during a view-update pass; a synchronous
+        // `objectWillChange` there produces the "Publishing changes from within
+        // view updates is not allowed" warning. UserDefaults persistence in the
+        // setters is unchanged and still synchronous, so reads always observe
+        // the new value immediately — only the re-render notification is
+        // coalesced to the next tick.
+        changeCancellable = publisher
+            .receive(on: RunLoop.main)
+            .sink { [weak self] in
+                self?.objectWillChange.send()
+            }
     }
 
     private func registerDefaults() {
