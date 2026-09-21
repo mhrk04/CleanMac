@@ -1,0 +1,90 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "1. Add the additive helper script `scripts/make-appicon.sh`": [
+      {
+        "executionId": "39aeb649-6439-4eaf-92fc-0031b74f922d",
+        "chatSessionId": "sess_94a178f1-ddf0-4d66-a6df-a71451250801",
+        "timestamp": 1789950586685
+      },
+      {
+        "executionId": "39aeb649-6439-4eaf-92fc-0031b74f922d",
+        "chatSessionId": "sess_94a178f1-ddf0-4d66-a6df-a71451250801",
+        "timestamp": 1789951675706
+      }
+    ],
+    "2.1 Run the script against the source: `bash scripts/make-appicon.sh` (default source path).": [
+      {
+        "executionId": "39aeb649-6439-4eaf-92fc-0031b74f922d",
+        "chatSessionId": "sess_94a178f1-ddf0-4d66-a6df-a71451250801",
+        "timestamp": 1789951681811
+      }
+    ],
+    "2. Generate the master image and the ten delivered PNGs": [
+      {
+        "executionId": "39aeb649-6439-4eaf-92fc-0031b74f922d",
+        "chatSessionId": "sess_94a178f1-ddf0-4d66-a6df-a71451250801",
+        "timestamp": 1789951681934
+      }
+    ],
+    "2.2 Verify each PNG's exact pixel dimensions": [
+      {
+        "executionId": "39aeb649-6439-4eaf-92fc-0031b74f922d",
+        "chatSessionId": "sess_94a178f1-ddf0-4d66-a6df-a71451250801",
+        "timestamp": 1789951688163
+      }
+    ],
+    "3. Update `Contents.json` to reference all ten PNGs": [
+      {
+        "executionId": "39aeb649-6439-4eaf-92fc-0031b74f922d",
+        "chatSessionId": "sess_94a178f1-ddf0-4d66-a6df-a71451250801",
+        "timestamp": 1789951694369
+      },
+      {
+        "executionId": "39aeb649-6439-4eaf-92fc-0031b74f922d",
+        "chatSessionId": "sess_94a178f1-ddf0-4d66-a6df-a71451250801",
+        "timestamp": 1789962594121
+      }
+    ],
+    "4.1 Build via `bash scripts/build.sh`": [
+      {
+        "executionId": "39aeb649-6439-4eaf-92fc-0031b74f922d",
+        "chatSessionId": "sess_94a178f1-ddf0-4d66-a6df-a71451250801",
+        "timestamp": 1789962600031
+      }
+    ],
+    "4. Build and verify the icon renders": [
+      {
+        "executionId": "39aeb649-6439-4eaf-92fc-0031b74f922d",
+        "chatSessionId": "sess_94a178f1-ddf0-4d66-a6df-a71451250801",
+        "timestamp": 1789962600054
+      }
+    ],
+    "4.2 Confirm the compiled catalog and visual fidelity": [
+      {
+        "executionId": "39aeb649-6439-4eaf-92fc-0031b74f922d",
+        "chatSessionId": "sess_94a178f1-ddf0-4d66-a6df-a71451250801",
+        "timestamp": 1789962605773
+      }
+    ],
+    "5. Non-regression scope check": [
+      {
+        "executionId": "39aeb649-6439-4eaf-92fc-0031b74f922d",
+        "chatSessionId": "sess_94a178f1-ddf0-4d66-a6df-a71451250801",
+        "timestamp": 1789962612091
+      },
+      {
+        "executionId": "39aeb649-6439-4eaf-92fc-0031b74f922d",
+        "chatSessionId": "sess_94a178f1-ddf0-4d66-a6df-a71451250801",
+        "timestamp": 1789962626398
+      }
+    ],
+    "6. Commit the new assets and helper script": [
+      {
+        "executionId": "39aeb649-6439-4eaf-92fc-0031b74f922d",
+        "chatSessionId": "sess_94a178f1-ddf0-4d66-a6df-a71451250801",
+        "timestamp": 1789962632599
+      }
+    ]
+  }
+}
