@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CleanMac - Native macOS Cleaner</title>
+  <meta name="description" content="CleanMac is a native macOS cleaner. Rule-driven, trash-first, and open source. Smart Scan, System Junk, Uninstaller, and Large & Old Files - nothing leaves your machine." />
+  <meta name="theme-color" content="#0F1220" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="CleanMac - Native macOS Cleaner" />
+  <meta property="og:description" content="A native macOS cleaner. Rule-driven, trash-first, open source. Smart Scan, System Junk, Uninstaller, and Large & Old Files - nothing leaves your machine." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://github.com/mhrk04/CleanMac" />
+
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%237B5CFF'/%3E%3Cstop offset='1' stop-color='%233BA9FF'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='24' fill='url(%23g)'/%3E%3Ctext x='50' y='68' font-size='52' text-anchor='middle'%3E%F0%9F%A7%B9%3C/text%3E%3C/svg%3E" />
+
+  <style>
+    :root {
+      --bg: #0F1220;
+      --surface: #1A1E35;
+      --elevated: #242946;
+      --accent-a: #7B5CFF;
+      --accent-b: #3BA9FF;
+      --warning: #FFB547;
+      --danger: #FF5C7A;
+      --text: rgba(255, 255, 255, 0.92);
+      --text-dim: rgba(255, 255, 255, 0.60);
+      --border: rgba(255, 255, 255, 0.08);
+      --accent-grad: linear-gradient(135deg, #7B5CFF 0%, #3BA9FF 100%);
+      --radius: 18px;
+      --radius-sm: 12px;
+      --shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+      --shadow-sm: 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro", "SF Pro Text", Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    :focus-visible {
+      outline: 2px solid var(--accent-b);
+      outline-offset: 3px;
+      border-radius: 6px;
+    }
+
+    .wrap {
+      width: 100%;
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ---------- Logo mark ---------- */
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: -0.01em;
+    }
+    .logo-mark {
+      width: 40px;
+      height: 40px;
+      border-radius: 11px;
+      background: var(--accent-grad);
+      display: grid;
+      place-items: center;
+      font-size: 20px;
+      box-shadow: 0 6px 18px rgba(123, 92, 255, 0.45);
+      flex-shrink: 0;
+    }
+
+    /* ---------- Header ---------- */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: saturate(180%) blur(14px);
+      -webkit-backdrop-filter: saturate(180%) blur(14px);
+      background: rgba(15, 18, 32, 0.72);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 68px;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+    .nav-links a {
+      color: var(--text-dim);
+      font-size: 0.95rem;
+      transition: color 0.15s ease;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links .nav-cta {
+      color: var(--text);
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 10px;
+      background: var(--accent-grad);
+      box-shadow: 0 6px 16px rgba(59, 169, 255, 0.35);
+    }
+    .nav-links .nav-cta:hover { color: #fff; }
+    .nav-hide-mobile { display: flex; }
+
+    /* ---------- Buttons ---------- */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 26px;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+      white-space: nowrap;
+    }
+    .btn:active { transform: translateY(1px); }
+    .btn-primary {
+      background: var(--accent-grad);
+      color: #fff;
+      box-shadow: 0 10px 26px rgba(123, 92, 255, 0.4);
+    }
+    .btn-primary:hover { box-shadow: 0 14px 34px rgba(123, 92, 255, 0.55); transform: translateY(-2px); }
+    .btn-secondary {
+      background: var(--elevated);
+      color: var(--text);
+      border-color: var(--border);
+    }
+    .btn-secondary:hover { background: #2c3255; border-color: rgba(255,255,255,0.18); transform: translateY(-2px); }
+
+    /* ---------- Hero ---------- */
+    .hero {
+      position: relative;
+      padding: 96px 0 88px;
+      text-align: center;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: -220px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 900px;
+      height: 900px;
+      background: radial-gradient(circle at 50% 40%, rgba(123, 92, 255, 0.32), rgba(59, 169, 255, 0.12) 42%, transparent 68%);
+      filter: blur(10px);
+      z-index: 0;
+      pointer-events: none;
+    }
+    .hero .wrap { position: relative; z-index: 1; }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      font-size: 0.85rem;
+      margin-bottom: 28px;
+    }
+    .hero-logo-mark {
+      width: 84px;
+      height: 84px;
+      border-radius: 22px;
+      background: var(--accent-grad);
+      display: grid;
+      place-items: center;
+      font-size: 44px;
+      margin: 0 auto 26px;
+      box-shadow: 0 18px 44px rgba(123, 92, 255, 0.5);
+    }
+    .hero h1 {
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      font-weight: 800;
+      margin-bottom: 20px;
+    }
+    .hero h1 .grad {
+      background: var(--accent-grad);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .hero p.tagline {
+      font-size: clamp(1.05rem, 2.4vw, 1.35rem);
+      color: var(--text-dim);
+      max-width: 620px;
+      margin: 0 auto 36px;
+    }
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
+    }
+    .hero-meta {
+      font-size: 0.9rem;
+      color: var(--text-dim);
+    }
+
+    /* ---------- Section ---------- */
+    section { padding: 80px 0; }
+    .section-head { text-align: center; max-width: 640px; margin: 0 auto 52px; }
+    .section-head h2 {
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      letter-spacing: -0.02em;
+      font-weight: 800;
+      margin-bottom: 14px;
+    }
+    .section-head p { color: var(--text-dim); font-size: 1.05rem; }
+    .eyebrow {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: var(--accent-grad);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 12px;
+    }
+
+    /* ---------- Feature grid ---------- */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 30px;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .card:hover { transform: translateY(-4px); border-color: rgba(123, 92, 255, 0.4); }
+    .card-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: var(--elevated);
+      display: grid;
+      place-items: center;
+      font-size: 26px;
+      margin-bottom: 18px;
+      border: 1px solid var(--border);
+    }
+    .card h3 { font-size: 1.25rem; margin-bottom: 8px; letter-spacing: -0.01em; }
+    .card p { color: var(--text-dim); font-size: 0.98rem; }
+
+    /* ---------- Why / safety ---------- */
+    .why { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+    }
+    .why-item {
+      display: flex;
+      gap: 16px;
+      padding: 24px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+    }
+    .why-check {
+      flex-shrink: 0;
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: rgba(123, 92, 255, 0.16);
+      color: var(--accent-b);
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .why-item h3 { font-size: 1.08rem; margin-bottom: 4px; }
+    .why-item p { color: var(--text-dim); font-size: 0.94rem; }
+
+    /* ---------- Download ---------- */
+    .download-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 40px;
+      box-shadow: var(--shadow);
+    }
+    .version-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(59, 169, 255, 0.14);
+      color: var(--accent-b);
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+    .steps { list-style: none; counter-reset: step; display: grid; gap: 18px; margin: 8px 0 28px; }
+    .steps li {
+      counter-increment: step;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .steps li::before {
+      content: counter(step);
+      flex-shrink: 0;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--accent-grad);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.9rem;
+      display: grid;
+      place-items: center;
+      margin-top: 2px;
+    }
+    .steps li p { color: var(--text-dim); }
+    .steps li strong { color: var(--text); font-weight: 600; }
+    code {
+      font-family: "SF Mono", ui-monospace, "Menlo", Consolas, monospace;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 2px 8px;
+      font-size: 0.88em;
+      color: #cbd4ff;
+      word-break: break-all;
+    }
+    .code-block {
+      display: block;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px 18px;
+      margin-top: 10px;
+      font-family: "SF Mono", ui-monospace, "Menlo", Consolas, monospace;
+      font-size: 0.9rem;
+      color: #cbd4ff;
+      overflow-x: auto;
+      white-space: pre;
+    }
+    .source-note {
+      margin-top: 26px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      color: var(--text-dim);
+      font-size: 0.95rem;
+    }
+    .source-note strong { color: var(--text); }
+
+    /* ---------- Disclaimer ---------- */
+    .disclaimer {
+      display: flex;
+      gap: 18px;
+      align-items: flex-start;
+      background: rgba(255, 181, 71, 0.08);
+      border: 1px solid rgba(255, 181, 71, 0.35);
+      border-radius: var(--radius);
+      padding: 26px 28px;
+    }
+    .disclaimer .warn-icon {
+      flex-shrink: 0;
+      font-size: 26px;
+      line-height: 1.2;
+    }
+    .disclaimer h3 { color: var(--warning); font-size: 1.1rem; margin-bottom: 6px; }
+    .disclaimer p { color: var(--text-dim); font-size: 0.96rem; }
+    .disclaimer a { color: var(--accent-b); text-decoration: underline; text-underline-offset: 2px; }
+    .disclaimer a:hover { color: #74c4ff; }
+
+    /* ---------- Footer ---------- */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 48px 0 40px;
+      background: var(--surface);
+    }
+    .footer-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+    .footer-links {
+      display: flex;
+      gap: 26px;
+      flex-wrap: wrap;
+    }
+    .footer-links a { color: var(--text-dim); font-size: 0.95rem; transition: color 0.15s ease; }
+    .footer-links a:hover { color: var(--text); }
+    .footer-bottom {
+      color: var(--text-dim);
+      font-size: 0.85rem;
+      border-top: 1px solid var(--border);
+      padding-top: 24px;
+    }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 720px) {
+      .nav-hide-mobile { display: none; }
+      .features, .why-grid { grid-template-columns: 1fr; }
+      section { padding: 60px 0; }
+      .hero { padding: 72px 0 64px; }
+      .download-card { padding: 28px 22px; }
+      .disclaimer { flex-direction: column; gap: 10px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      * { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <nav class="nav" aria-label="Primary">
+        <a href="#top" class="logo" aria-label="CleanMac home">
+          <span class="logo-mark" aria-hidden="true">🧹</span>
+          <span>CleanMac</span>
+        </a>
+        <div class="nav-links nav-hide-mobile">
+          <a href="#features">Features</a>
+          <a href="#why">Why CleanMac</a>
+          <a href="#download">Download</a>
+          <a class="nav-cta" href="https://github.com/mhrk04/CleanMac/releases/latest">Download</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- HERO -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="wrap">
+        <span class="hero-badge">Universal · Apple Silicon &amp; Intel · macOS 14+</span>
+        <div class="hero-logo-mark" aria-hidden="true">🧹</div>
+        <h1 id="hero-title">Keep your Mac<br /><span class="grad">clean and clutter-free.</span></h1>
+        <p class="tagline">A native macOS cleaner. Rule-driven, trash-first, open source.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="https://github.com/mhrk04/CleanMac/releases/latest">
+            <span aria-hidden="true">⬇</span> Download for macOS
+          </a>
+          <a class="btn btn-secondary" href="https://github.com/mhrk04/CleanMac">
+            <span aria-hidden="true">★</span> View on GitHub
+          </a>
+        </div>
+        <p class="hero-meta">Free and open source · Nothing leaves your machine.</p>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section id="features" aria-labelledby="features-title">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">What it does</span>
+          <h2 id="features-title">Four ways to reclaim space</h2>
+          <p>Every module is scoped, previewable, and reversible. You stay in control the whole time.</p>
+        </div>
+        <div class="features">
+          <article class="card">
+            <div class="card-icon" aria-hidden="true">⚡</div>
+            <h3>Smart Scan</h3>
+            <p>One-click scan that runs every cleaner in parallel, then shows you exactly what it found before touching anything.</p>
+          </article>
+          <article class="card">
+            <div class="card-icon" aria-hidden="true">🧽</div>
+            <h3>System Junk</h3>
+            <p>Caches, logs, Xcode &amp; npm &amp; pip data, unused language files, and the trash - all in one sweep.</p>
+          </article>
+          <article class="card">
+            <div class="card-icon" aria-hidden="true">🗑️</div>
+            <h3>Uninstaller</h3>
+            <p>Remove an app and all of its leftover files - preferences, caches, and support data that normally linger behind.</p>
+          </article>
+          <article class="card">
+            <div class="card-icon" aria-hidden="true">📦</div>
+            <h3>Large &amp; Old Files</h3>
+            <p>Find the big files you haven't opened in months, sorted so the easy wins float to the top.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHY / SAFETY -->
+    <section id="why" class="why" aria-labelledby="why-title">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Built for trust</span>
+          <h2 id="why-title">Why CleanMac</h2>
+          <p>A cleaner that deletes files should be careful by default. CleanMac is designed so mistakes are recoverable.</p>
+        </div>
+        <div class="why-grid">
+          <div class="why-item">
+            <span class="why-check" aria-hidden="true">↩</span>
+            <div>
+              <h3>Trash-first</h3>
+              <p>Nothing is permanently deleted. Everything moves to the Trash with a full undo from History.</p>
+            </div>
+          </div>
+          <div class="why-item">
+            <span class="why-check" aria-hidden="true">🛡</span>
+            <div>
+              <h3>Safety denylist</h3>
+              <p>Refuses to touch system paths, your Documents, and running apps - even if a rule asks it to.</p>
+            </div>
+          </div>
+          <div class="why-item">
+            <span class="why-check" aria-hidden="true">📋</span>
+            <div>
+              <h3>Rule-driven</h3>
+              <p>Cleaning logic lives in editable YAML rule packs. No hardcoded magic paths buried in the app.</p>
+            </div>
+          </div>
+          <div class="why-item">
+            <span class="why-check" aria-hidden="true">🔒</span>
+            <div>
+              <h3>No telemetry, open source</h3>
+              <p>Nothing leaves your machine - no tracking, no analytics. The full source is on GitHub to inspect.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DOWNLOAD -->
+    <section id="download" aria-labelledby="download-title">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Get started</span>
+          <h2 id="download-title">Download &amp; install</h2>
+          <p>A couple of extra clicks on first launch, because this build isn't notarized yet.</p>
+        </div>
+        <div class="download-card">
+          <span class="version-pill"><span aria-hidden="true">●</span> Current version: v1.0.1</span>
+          <ol class="steps">
+            <li>
+              <p><strong>Download and drag to Applications.</strong> Grab <a href="https://github.com/mhrk04/CleanMac/releases/latest" style="color:var(--accent-b);text-decoration:underline;text-underline-offset:2px;">CleanMac-1.0.1.dmg</a>, open it, then drag CleanMac into your Applications folder.</p>
+            </li>
+            <li>
+              <p><strong>First launch.</strong> Right-click CleanMac.app then choose <strong>Open</strong> &rarr; <strong>Open</strong> (it's not notarized yet), or clear the quarantine flag from Terminal:</p>
+              <code class="code-block">xattr -dr com.apple.quarantine /Applications/CleanMac.app</code>
+            </li>
+            <li>
+              <p><strong>Grant Full Disk Access</strong> when asked, so CleanMac can scan the folders it needs: <strong>System Settings &rarr; Privacy &amp; Security &rarr; Full Disk Access</strong>.</p>
+            </li>
+          </ol>
+
+          <div class="hero-actions" style="justify-content:flex-start;margin-bottom:0;">
+            <a class="btn btn-primary" href="https://github.com/mhrk04/CleanMac/releases/latest">
+              <span aria-hidden="true">⬇</span> Download CleanMac 1.0.1
+            </a>
+          </div>
+
+          <div class="source-note">
+            <strong>Prefer to build from source?</strong>
+            <code class="code-block">brew install xcodegen &amp;&amp; bash scripts/build.sh --open</code>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DISCLAIMER -->
+    <section style="padding-top:0;" aria-label="Disclaimer">
+      <div class="wrap">
+        <div class="disclaimer">
+          <span class="warn-icon" aria-hidden="true">⚠️</span>
+          <div>
+            <h3>Reference implementation - use at your own risk</h3>
+            <p>
+              CleanMac is unsandboxed, requests Full Disk Access, and deletes files. Use it at your own risk.
+              CleanMyMac is a trademark of MacPaw Inc.; this project is not affiliated with MacPaw.
+              Read the <a href="https://github.com/mhrk04/CleanMac/blob/main/docs/SECURITY_AND_READINESS.md">security &amp; readiness notes</a> before you run it.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="wrap">
+      <div class="footer-top">
+        <a href="#top" class="logo" aria-label="CleanMac home">
+          <span class="logo-mark" aria-hidden="true">🧹</span>
+          <span>CleanMac</span>
+        </a>
+        <nav class="footer-links" aria-label="Footer">
+          <a href="https://github.com/mhrk04/CleanMac">GitHub</a>
+          <a href="https://github.com/mhrk04/CleanMac/releases">Releases</a>
+          <a href="https://github.com/mhrk04/CleanMac/blob/main/docs/CODEBASE_GUIDE.md">Codebase Guide</a>
+          <a href="https://github.com/mhrk04/CleanMac/blob/main/docs/SECURITY_AND_READINESS.md">Security</a>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; <span id="year">2025</span> CleanMac. Open source. A native, rule-driven macOS cleaner. CleanMyMac is a trademark of MacPaw Inc.; this project is not affiliated.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Current year in footer
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
