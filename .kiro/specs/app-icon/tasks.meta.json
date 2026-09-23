@@ -84,6 +84,56 @@
         "executionId": "39aeb649-6439-4eaf-92fc-0031b74f922d",
         "chatSessionId": "sess_94a178f1-ddf0-4d66-a6df-a71451250801",
         "timestamp": 1789962632599
+      },
+      {
+        "executionId": "39aeb649-6439-4eaf-92fc-0031b74f922d",
+        "chatSessionId": "sess_94a178f1-ddf0-4d66-a6df-a71451250801",
+        "timestamp": 1789962671457
+      }
+    ],
+    "7.3 Bump version 1.0.0 → 1.0.1": [
+      {
+        "executionId": "39aeb649-6439-4eaf-92fc-0031b74f922d",
+        "chatSessionId": "sess_94a178f1-ddf0-4d66-a6df-a71451250801",
+        "timestamp": 1789962678041
+      },
+      {
+        "executionId": "39aeb649-6439-4eaf-92fc-0031b74f922d",
+        "chatSessionId": "sess_94a178f1-ddf0-4d66-a6df-a71451250801",
+        "timestamp": 1789963524323
+      }
+    ],
+    "7.1 Build a Release-configuration app, ad-hoc signed": [
+      {
+        "executionId": "39aeb649-6439-4eaf-92fc-0031b74f922d",
+        "chatSessionId": "sess_94a178f1-ddf0-4d66-a6df-a71451250801",
+        "timestamp": 1789963525214
+      }
+    ],
+    "7.2 Package the DMG with `hdiutil`": [
+      {
+        "executionId": "39aeb649-6439-4eaf-92fc-0031b74f922d",
+        "chatSessionId": "sess_94a178f1-ddf0-4d66-a6df-a71451250801",
+        "timestamp": 1789963526187
+      }
+    ],
+    "7.4 Publish the GitHub release v1.0.1": [
+      {
+        "executionId": "72d8fc66-c309-4ba8-9fd9-92195d1b89a6",
+        "chatSessionId": "sess_94a178f1-ddf0-4d66-a6df-a71451250801",
+        "timestamp": 1789963655900
+      },
+      {
+        "executionId": "72d8fc66-c309-4ba8-9fd9-92195d1b89a6",
+        "chatSessionId": "sess_94a178f1-ddf0-4d66-a6df-a71451250801",
+        "timestamp": 1789963763039
+      }
+    ],
+    "7. (R6 — required) Repackage and publish the v1.0.1 release": [
+      {
+        "executionId": "72d8fc66-c309-4ba8-9fd9-92195d1b89a6",
+        "chatSessionId": "sess_94a178f1-ddf0-4d66-a6df-a71451250801",
+        "timestamp": 1789963763075
       }
     ]
   }

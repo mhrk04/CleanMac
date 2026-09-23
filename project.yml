@@ -85,8 +85,8 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.cleanmac.app
         PRODUCT_NAME: CleanMac
-        MARKETING_VERSION: "1.0.0"
-        CURRENT_PROJECT_VERSION: "1"
+        MARKETING_VERSION: "1.0.1"
+        CURRENT_PROJECT_VERSION: "2"
         INFOPLIST_FILE: CleanMac/Supporting/Info.plist
         CODE_SIGN_ENTITLEMENTS: CleanMac/Supporting/CleanMac.entitlements
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon

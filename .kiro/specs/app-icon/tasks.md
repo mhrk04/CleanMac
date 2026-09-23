@@ -79,26 +79,26 @@ flowchart TD
   - Confirm no Swift source file changed and (for tasks 1–6) `project.yml` is unchanged.
   - _Requirements: 5.1, 5.2, 5.3_
 
-- [-] 6. Commit the new assets and helper script
+- [x] 6. Commit the new assets and helper script
   - Stage exactly the ten PNGs, the updated `Contents.json`, and `scripts/make-appicon.sh` (avoid `git add -A`).
   - Commit GPG-signed with a Conventional Commits message (the repo enforces the format via `.githooks/commit-msg`), e.g. `feat(icon): add broom app icon and make-appicon.sh generator`.
   - Do NOT push — per the SCM boundary, pushing requires explicit user confirmation (deferred to task 7.4 / release).
   - _Requirements: 3.1, 5.1, 5.2, 5.3_
 
-- [ ] 7. (R6 — required) Repackage and publish the v1.0.1 release
-  - [ ] 7.1 Build a Release-configuration app, ad-hoc signed
+- [x] 7. (R6 — required) Repackage and publish the v1.0.1 release
+  - [x] 7.1 Build a Release-configuration app, ad-hoc signed
     - `xcodebuild -configuration Release` with `CODE_SIGN_IDENTITY="-" CODE_SIGN_STYLE=Manual ENABLE_HARDENED_RUNTIME=NO DEVELOPMENT_TEAM=""` (mirrors how the v1.0.0 DMG was built — no Developer ID).
     - Confirm the Release `.app` shows the new broom icon and bundles the rule YAMLs from `CleanMac/Resources/Rules/`.
     - _Requirements: 6.1_
-  - [ ] 7.2 Package the DMG with `hdiutil`
+  - [x] 7.2 Package the DMG with `hdiutil`
     - Build a staging folder containing `CleanMac.app` and an `/Applications` symlink, then `hdiutil create ... -format UDZO CleanMac-1.0.1.dmg`.
     - Compute and record `shasum -a 256 CleanMac-1.0.1.dmg`.
     - _Requirements: 6.1_
-  - [ ] 7.3 Bump version 1.0.0 → 1.0.1
+  - [x] 7.3 Bump version 1.0.0 → 1.0.1
     - Change `MARKETING_VERSION` in `project.yml` from `1.0.0` to `1.0.1`. **This IS a `project.yml` change** — it is a documented, in-scope version bump for R6, explicitly exempt from R5.3 (which forbade project.yml *icon-asset* changes); it is NOT a regression. Flag it in the commit message.
     - Regenerate the project (`xcodegen` / `bash scripts/build.sh`) and rebuild so the DMG's app reports version 1.0.1.
     - _Requirements: 6.1_
-  - [ ] 7.4 Publish the GitHub release v1.0.1
+  - [x] 7.4 Publish the GitHub release v1.0.1
     - `gh release create v1.0.1 --target main` attaching `CleanMac-1.0.1.dmg`, with notes covering: the new broom icon, the same Gatekeeper / Full Disk Access caveats as v1.0.0, and the DMG SHA-256.
     - **Requires explicit user confirmation before pushing the tag/commit and publishing** — per the SCM boundary, the agent prepares the release but does not push/publish without a fresh in-session "yes".
     - _Requirements: 6.2_
